@@ -1,0 +1,182 @@
+/* ========== 暗色主题 - Catppuccin 风格 ========== */
+html.dark {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+}
+html.dark .post-title {
+    color: #e0e0e0;
+}
+html.dark .post-item .content .post-title {
+    color: #e0e0e0;
+}
+html.dark .post-item .content .post-abstract {
+    color: #b0b0b0;
+}
+html.dark .post-item .post-info {
+    color: #89b4fa;
+}
+html.dark .post-detail .post-title {
+    color: #e0e0e0;
+}
+html.dark .post-detail .post-info,
+html.dark .post-detail .post-info a {
+    color: #89b4fa;
+}
+html.dark .post-detail .feature-container {
+    box-shadow: none;
+}
+html.dark .post-content p {
+    color: #cdd6f4;
+}
+html.dark .post-content code:not([class*=language-]) {
+    color: #cdd6f4;
+    background-color: rgba(110,118,129,0.4);
+    border: none;
+    border-radius: 6px;
+}
+html.dark .post-content h1,
+html.dark .post-content h2,
+html.dark .post-content h3,
+html.dark .post-content h4,
+html.dark .post-content h5,
+html.dark .post-content h6 {
+    color: #e0e0e0;
+}
+html.dark .post-content img {
+    box-shadow: none;
+}
+html.dark .post-content table {
+    color: #cdd6f4;
+}
+html.dark .post-content table tr:hover {
+    background-color: #313244;
+}
+html.dark .post-content ul,
+html.dark .post-content ol {
+    color: #cdd6f4;
+}
+html.dark .post-content blockquote {
+    background: #181825;
+}
+html.dark .highlight,
+html.dark pre[class*=language-].line-numbers {
+    background-color: #181825;
+}
+html.dark .highlight .copy-code {
+    color: #a1a1a1;
+}
+html.dark .highlight table tr:hover {
+    background-color: #181825;
+}
+html.dark .highlight code[class*=language-] {
+    overflow-x: auto;
+    background: #181825;
+}
+html.dark .highlight .link {
+    color: #89b4fa;
+}
+html.dark .site-header-container {
+    background-color: #1e1e2e;
+}
+html.dark .site-header {
+    box-shadow: none;
+}
+html.dark .site-header .site-title {
+    color: #cdd6f4;
+}
+html.dark .top-box li a {
+    color: #cdd6f4;
+}
+html.dark .top-box li a:hover,
+html.dark .top-box li a.current {
+    color: #89b4fa !important;
+    background: #313244;
+}
+html.dark .next-post .post-title {
+    color: #cdd6f4;
+}
+html.dark .next-post .purple-link {
+    background: linear-gradient(180deg, transparent 70%, rgb(101,125,225) 0);
+}
+html.dark .pagination-container a,
+html.dark .site-footer a {
+    color: #cdd6f4;
+}
+html.dark .menu-container {
+    background-color: #1e1e2e;
+}
+html.dark .menu-container .menu-list a {
+    color: #cdd6f4;
+}
+html.dark .gt-container .gt-comment-body {
+    color: #dfdfdf !important;
+}
+html.dark .markdown-body blockquote {
+    border-left: 0.25em solid #6c7086;
+}
+html.dark .gt-container .gt-comment-content:hover {
+    box-shadow: none;
+}
+html.dark .gt-container .gt-header-textarea {
+    background-color: #313244 !important;
+    color: #dfdfdf;
+}
+html.dark .gt-container .gt-header-textarea:hover {
+    background-color: #313244;
+}
+html.dark .gt-container .gt-comment-content {
+    background-color: #181825;
+}
+html.dark .gt-container .gt-svg svg {
+    fill: #89b4fa;
+}
+html.dark .highlight .tag,
+html.dark .highlight .name,
+html.dark .highlight .attribute {
+    color: #cba6f7;
+}
+html.dark .highlight .deletion {
+    color: #f38ba8;
+    background: #67060c;
+}
+html.dark .highlight .addition {
+    color: #a6e3a1;
+    background-color: #033a16;
+}
+html.dark .deletion {
+    color: #f38ba8;
+    background: #67060c;
+}
+html.dark .addition {
+    color: #a6e3a1;
+    background: #033a16;
+}
+html.dark .keyword,
+html.dark .selector-tag,
+html.dark .subst {
+    color: #cdd6f4;
+}
+html.dark .tags-container .tag {
+    color: #89b4fa;
+    border-color: #89b4fa;
+}
+html.dark #twikoo .tk-ruser,
+html.dark .tk-footer a,
+html.dark .tk-actions a {
+    color: #89b4fa;
+}
+
+/* ========== 顶部间距加大 ========== */
+.content-container {
+    padding: 120px 16px 32px !important;
+}
+
+/* ========== 内嵌视频变大 ========== */
+.post-content iframe {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: 540px;
+    margin: 16px auto;
+    border-radius: 4px;
+}
