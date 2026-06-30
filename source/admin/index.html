@@ -123,14 +123,6 @@
       margin-top: 0;
     }
     .logout:hover { background: #252525; color: #fff; }
-    .config-area {
-      background: #252525;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    .config-area label { margin-top: 0; }
-    .config-area input { margin-bottom: 8px; }
     .status-bar {
       font-size: 12px;
       color: #666;
@@ -174,7 +166,6 @@
     <div class="tabs">
       <div class="tab active" onclick="switchTab('list')">📋 文章列表</div>
       <div class="tab" onclick="switchTab('edit')">✍️ 写文章</div>
-      <div class="tab" onclick="switchTab('config')">⚙️ 设置</div>
     </div>
 
     <!-- Post List -->
@@ -207,19 +198,6 @@
       <p class="error" id="save-error">保存失败</p>
     </div>
 
-    <!-- Config -->
-    <div id="tab-config" class="tab-content">
-      <div class="config-area">
-        <p style="color:#888;margin-bottom:8px;">仓库: <strong>LIF1FFF/blog</strong></p>
-        <p style="color:#22c55e;font-size:14px;" id="config-token-status">✅ Token 已配置</p>
-        <hr style="border-color:#333;margin:16px 0;">
-        <label>更换 GitHub Token</label>
-        <input type="password" id="config-token" placeholder="留空则不修改">
-        <p style="font-size:12px;color:#888;">需要 repo 权限。在 GitHub Settings → Developer settings → Personal access tokens 创建</p>
-      </div>
-      <button onclick="saveConfig()">💾 保存设置</button>
-      <p class="success" id="config-success">设置已保存</p>
-    </div>
   </div>
 
   <script>
@@ -576,19 +554,7 @@ categories: [${category || '教程'}]
       }
     }
 
-    // ========== Config ==========
-    function saveConfig() {
-      const token = document.getElementById('config-token').value.trim();
-      if (token) {
-        setToken(token);
-        document.getElementById('config-token-status').textContent = '✅ Token 已配置';
-        document.getElementById('config-token-status').style.color = '#22c55e';
-      }
-      document.getElementById('config-success').style.display = 'block';
-      document.getElementById('config-token').value = '';
-      setTimeout(() => document.getElementById('config-success').style.display = 'none', 2000);
-      showToast(token ? 'Token 已更新' : '无需更改');
-    }
+
 
     // ========== Helpers ==========
     function decodeBase64UTF8(b64) {
