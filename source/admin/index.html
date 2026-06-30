@@ -137,6 +137,20 @@
       margin-top: 12px;
       text-align: center;
     }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .page-btn {
+      min-width: 32px;
+      text-align: center;
+    }
+    .page-btn.active {
+      background: #3b82f6;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -294,6 +308,10 @@
       };
     }
 
+    let _allPosts = [];
+    let _currentPage = 1;
+    const PAGE_SIZE = 10;
+
     async function loadPosts() {
       const list = document.getElementById('post-list');
       list.innerHTML = '加载中...';
@@ -325,29 +343,54 @@
           });
         }
 
-        // Sort by abbrlink
-        posts.sort((a, b) => (parseInt(a.abbrlink) || 0) - (parseInt(b.abbrlink) || 0));
-
-        if (posts.length === 0) {
-          list.innerHTML = '<p style="color:#888;">暂无文章</p>';
-          return;
-        }
-
-        list.innerHTML = posts.map(p => `
-          <div class="post-item">
-            <div class="info">
-              <div class="title">#${p.abbrlink} ${escapeHtml(p.title)}</div>
-              <div class="meta">${p.date} | ${p.category} | ${p.tags}</div>
-            </div>
-            <div class="actions">
-              <button class="btn-sm btn-edit" onclick="editPost('${escapeAttr(p.name)}','${escapeAttr(p.sha)}','${escapeAttr(p.title)}','${escapeAttr(p.abbrlink)}','${escapeAttr(p.category)}','${escapeAttr(p.tags)}',\`${escapeBacktick(p.content)}\`)">编辑</button>
-              <button class="btn-sm btn-delete" onclick="deletePost('${escapeAttr(p.name)}','${escapeAttr(p.sha)}')">删除</button>
-            </div>
-          </div>
-        `).join('');
+        // Sort by abbrlink descending (newest first)
+        _allPosts = posts.sort((a, b) => (parseInt(b.abbrlink) || 0) - (parseInt(a.abbrlink) || 0));
+        _currentPage = 1;
+        renderPostList();
       } catch(e) {
         list.innerHTML = `<p style="color:#ef4444;">加载失败: ${escapeHtml(e.message)}。请检查 Token 设置。</p>`;
       }
+    }
+
+    function renderPostList() {
+      const list = document.getElementById('post-list');
+      if (_allPosts.length === 0) {
+        list.innerHTML = '<p style="color:#888;">暂无文章</p>';
+        return;
+      }
+      const totalPages = Math.ceil(_allPosts.length / PAGE_SIZE);
+      const start = (_currentPage - 1) * PAGE_SIZE;
+      const pagePosts = _allPosts.slice(start, start + PAGE_SIZE);
+
+      let html = pagePosts.map(p => `
+        <div class="post-item">
+          <div class="info">
+            <div class="title">#${p.abbrlink} ${escapeHtml(p.title)}</div>
+            <div class="meta">${p.date} | ${p.category} | ${p.tags}</div>
+          </div>
+          <div class="actions">
+            <button class="btn-sm btn-edit" onclick="editPost('${escapeAttr(p.name)}','${escapeAttr(p.sha)}','${escapeAttr(p.title)}','${escapeAttr(p.abbrlink)}','${escapeAttr(p.category)}','${escapeAttr(p.tags)}',\`${escapeBacktick(p.content)}\`)">编辑</button>
+            <button class="btn-sm btn-delete" onclick="deletePost('${escapeAttr(p.name)}','${escapeAttr(p.sha)}')">删除</button>
+          </div>
+        </div>
+      `).join('');
+
+      if (totalPages > 1) {
+        html += '<div class="pagination">';
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="btn-sm page-btn${i === _currentPage ? ' active' : ''}" onclick="goPage(${i})">${i}</button>`;
+        }
+        html += '</div>';
+      }
+
+      html += `<p class="status-bar">共 ${_allPosts.length} 篇文章 · 第 ${_currentPage}/${totalPages} 页</p>`;
+      list.innerHTML = html;
+    }
+
+    function goPage(n) {
+      _currentPage = n;
+      renderPostList();
+      document.getElementById('post-list').scrollIntoView({ behavior: 'smooth' });
     }
 
     function parseFrontMatter(raw) {
