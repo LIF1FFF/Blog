@@ -14,7 +14,11 @@ timezone: ''
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://blogg-dpqr1yrm4xle.edgeone.cool
-permalink: :year/:month/:day/:title/
+permalink: post/:abbrlink/
+# abbrlink config - 手动在 front-matter 中设置 abbrlink，未设置则自动用 crc16 生成
+abbrlink:
+  alg: crc16
+  rep: dec
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks

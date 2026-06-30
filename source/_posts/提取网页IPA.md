@@ -1,5 +1,6 @@
 ---
 title: 提取网页IPA
+abbrlink: 7
 date: 2026-06-25
 tags: [iOS, IPA, 教程]
 categories: [教程]

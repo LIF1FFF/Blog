@@ -1,5 +1,6 @@
 ---
 title: IPA包添加插件
+abbrlink: 1
 date: 2026-06-25
 tags: [iOS, IPA, 插件, 教程]
 categories: [教程]

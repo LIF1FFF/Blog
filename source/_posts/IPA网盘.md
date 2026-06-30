@@ -1,5 +1,6 @@
 ---
 title: IPA网盘
+abbrlink: 2
 date: 2026-06-25
 tags: [iOS, IPA, 网盘, 资源]
 categories: [资源]
