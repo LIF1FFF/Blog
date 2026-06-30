@@ -11,6 +11,7 @@ const files = [
   'layout/includes/footer.ejs',
   'layout/post.ejs',
   'layout/includes/head.ejs',
+  'layout/includes/navigation_bar.ejs',
 ];
 
 files.forEach(file => {
