@@ -158,10 +158,11 @@
   <div id="login-page" class="login-box">
     <h1>🔐 Blog Admin</h1>
     <p class="subtitle">登录以管理你的博客</p>
-    <label>密码</label>
-    <input type="password" id="login-pwd" placeholder="输入管理密码" onkeydown="if(event.key==='Enter')login()">
+    <label>GitHub Token</label>
+    <input type="password" id="login-pwd" placeholder="ghp_xxx" onkeydown="if(event.key==='Enter')login()">
     <button onclick="login()">登 录</button>
-    <p class="error" id="login-error">密码错误</p>
+    <p class="error" id="login-error">Token 无效或权限不足</p>
+    <p style="font-size:12px;color:#888;margin-top:8px;">Token 只在浏览器本地使用，不会上传到服务器</p>
   </div>
 
   <!-- Admin Panel -->
@@ -212,12 +213,7 @@
         <label>GitHub Token</label>
         <input type="password" id="config-token" placeholder="ghp_xxxxxxxxxxxx">
         <p style="font-size:12px;color:#888;">需要 repo 权限。在 GitHub Settings → Developer settings → Personal access tokens 创建</p>
-        <label>仓库所有者</label>
-        <input type="text" id="config-owner" placeholder="LIF1FFF">
-        <label>仓库名</label>
-        <input type="text" id="config-repo" placeholder="blog">
-        <label>管理密码</label>
-        <input type="password" id="config-pwd" placeholder="修改登录密码">
+        <p style="font-size:12px;color:#666;margin-top:8px;">仓库: <strong>LIF1FFF/blog</strong>（已自动配置）</p>
       </div>
       <button onclick="saveConfig()">💾 保存设置</button>
       <p class="success" id="config-success">设置已保存</p>
@@ -226,33 +222,35 @@
 
   <script>
     // ========== Config ==========
-    const DEFAULT_PWD = 'admin123';
-    const DEFAULT_OWNER = 'LIF1FFF';
-    const DEFAULT_REPO = 'blog';
-    const STORAGE_KEY = 'blog_admin_config';
+    const GH_OWNER = 'LIF1FFF';
+    const GH_REPO = 'blog';
+    const STORAGE_KEY = 'blog_admin_token';
 
-    function getConfig() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+    function getToken() {
+      return sessionStorage.getItem(STORAGE_KEY) || '';
     }
-    function setConfig(obj) {
-      const cfg = getConfig();
-      Object.assign(cfg, obj);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    function setToken(t) {
+      sessionStorage.setItem(STORAGE_KEY, t);
     }
 
     // ========== Auth ==========
-    function login() {
-      const pwd = document.getElementById('login-pwd').value;
-      const cfg = getConfig();
-      const correctPwd = cfg.pwd || DEFAULT_PWD;
-      if (pwd === correctPwd) {
+    async function login() {
+      const token = document.getElementById('login-pwd').value.trim();
+      if (!token) { document.getElementById('login-error').style.display = 'block'; return; }
+      // 验证 Token 是否有效
+      try {
+        const resp = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (!resp.ok) throw new Error('invalid');
+        setToken(token);
         sessionStorage.setItem('blog_admin_logged', '1');
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('admin-page').style.display = 'block';
         document.getElementById('login-error').style.display = 'none';
         document.getElementById('login-pwd').value = '';
         loadPosts();
-      } else {
+      } catch(e) {
         document.getElementById('login-error').style.display = 'block';
       }
     }
@@ -294,16 +292,12 @@
 
     // ========== GitHub API ==========
     function getApiBase() {
-      const cfg = getConfig();
-      const owner = cfg.owner || DEFAULT_OWNER;
-      const repo = cfg.repo || DEFAULT_REPO;
-      return `https://api.github.com/repos/${owner}/${repo}`;
+      return `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`;
     }
 
     function getHeaders() {
-      const cfg = getConfig();
       return {
-        'Authorization': `token ${cfg.token || ''}`,
+        'Authorization': `token ${getToken()}`,
         'Accept': 'application/vnd.github.v3+json'
       };
     }
@@ -583,18 +577,11 @@ categories: [${category || '教程'}]
     // ========== Config ==========
     function saveConfig() {
       const token = document.getElementById('config-token').value.trim();
-      const owner = document.getElementById('config-owner').value.trim();
-      const repo = document.getElementById('config-repo').value.trim();
-      const pwd = document.getElementById('config-pwd').value.trim();
-      if (token) setConfig({ token });
-      if (owner) setConfig({ owner });
-      if (repo) setConfig({ repo });
-      if (pwd) setConfig({ pwd });
+      if (token) setToken(token);
       document.getElementById('config-success').style.display = 'block';
       document.getElementById('config-token').value = '';
-      document.getElementById('config-pwd').value = '';
       setTimeout(() => document.getElementById('config-success').style.display = 'none', 2000);
-      showToast('设置已保存');
+      showToast('Token 已更新');
     }
 
     // ========== Helpers ==========
@@ -625,11 +612,7 @@ categories: [${category || '教程'}]
     }
 
     // ========== Init ==========
-    document.addEventListener('DOMContentLoaded', () => {
-      const cfg = getConfig();
-      document.getElementById('config-owner').value = cfg.owner || DEFAULT_OWNER;
-      document.getElementById('config-repo').value = cfg.repo || DEFAULT_REPO;
-    });
+    // 用户名和仓库名已固定为 LIF1FFF/blog，无需配置
   </script>
 </body>
 </html>
