@@ -178,6 +178,11 @@
       <label>标签（逗号分隔）</label>
       <input type="text" id="post-tags" placeholder="iOS, 签名, 教程">
       <label>内容（Markdown）*</label>
+      <div style="margin-bottom:8px;">
+        <input type="file" id="image-upload" accept="image/*" style="display:none" onchange="uploadImage()">
+        <button class="btn-sm" onclick="document.getElementById('image-upload').click()" style="margin-right:8px;">🖼️ 插入图片</button>
+        <span id="upload-status" style="font-size:12px;color:#888;"></span>
+      </div>
       <textarea id="post-content" placeholder="在这里写 Markdown 内容..."></textarea>
       <input type="hidden" id="post-abbrlink">
       <input type="hidden" id="post-filename">
@@ -457,6 +462,43 @@ categories: [${category || '教程'}]
         saveBtn.disabled = false;
         saveBtn.textContent = '💾 保存并发布';
       }
+    }
+
+    async function uploadImage() {
+      const file = document.getElementById('image-upload').files[0];
+      if (!file) return;
+      const status = document.getElementById('upload-status');
+      status.textContent = '上传中...';
+      const ts = Date.now();
+      const ext = file.name.split('.').pop();
+      const imgName = `img_${ts}.${ext}`;
+      const imgPath = `source/img/${imgName}`;
+      try {
+        const reader = new FileReader();
+        reader.onload = async function() {
+          const b64 = reader.result.split(',')[1];
+          const body = {
+            message: `upload: ${imgName}`,
+            content: b64,
+            branch: 'main'
+          };
+          const resp = await fetch(`${getApiBase()}/contents/${imgPath}`, {
+            method: 'PUT',
+            headers: { ...getHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const md = `![${file.name}](/img/${imgName})`;
+          const ta = document.getElementById('post-content');
+          ta.value = ta.value + '\n' + md + '\n';
+          status.textContent = '✅ 已插入';
+          setTimeout(() => status.textContent = '', 3000);
+        };
+        reader.readAsDataURL(file);
+      } catch(e) {
+        status.textContent = '❌ 上传失败: ' + e.message;
+      }
+      document.getElementById('image-upload').value = '';
     }
 
     async function deletePost(filename, sha) {
